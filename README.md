@@ -1,21 +1,36 @@
 
-##  Project Overview
+base_model: HuggingFaceTB/SmolLM2-360M-Instruct
+library_name: peft
+pipeline_tag: text-generation
+tags:
+- lora
+- transformers
+- text-to-sql
+- finetuned
+- instruction-tuning
+---
 
-This project builds a **Text-to-SQL system** by fine-tuning a language model to translate:
+# Text2SQL LoRA Model
 
-**Natural language questions ➜ SQL queries**
+A LoRA fine-tuned version of SmolLM2-360M-Instruct specialized for Text-to-SQL generation.  
+This system translates natural language questions into SQL queries using a provided database schema.
 
-The pipeline covers:
+---
+
+## Project Overview
+
+This project builds a Text-to-SQL system by fine-tuning a language model.  
+The full pipeline includes:
 
 - Dataset preprocessing  
 - LoRA / QLoRA fine-tuning  
 - Model evaluation  
 - Inference tools  
-- Web demo  
+- Web demo interface  
 
 ---
 
-##  Example Task
+## Example Task
 
 **Schema**
 ```sql
@@ -40,7 +55,8 @@ SELECT name FROM users WHERE age > 30;
 ```
 
 ---
-**More Example Inputs**
+
+## More Example Inputs
 
 | Question                           | Output SQL                                          |
 | ---------------------------------- | --------------------------------------------------- |
@@ -50,46 +66,85 @@ SELECT name FROM users WHERE age > 30;
 | Find oldest user                   | `SELECT name FROM users ORDER BY age DESC LIMIT 1;` |
 | Show all products with price > 100 | `SELECT * FROM products WHERE price > 100;`         |
 
-##  Project Structure
+---
+
+## Model Overview
+
+| Feature            | Description                |
+| ------------------ | -------------------------- |
+| Base Model         | SmolLM2-360M-Instruct      |
+| Fine-Tuning Method | LoRA (Low-Rank Adaptation) |
+| Task               | Natural Language to SQL    |
+| Dataset            | WikiSQL                    |
+| Framework          | Transformers + PEFT        |
+| Language           | English                    |
+| License            | MIT                        |
+
+---
+
+## Intended Use
+
+### Direct Use
+
+* Educational AI demonstrations
+* SQL generation experiments
+* NLP research projects
+
+### Downstream Use
+
+* Natural language database interfaces
+* AI-powered query assistants
+* Data analytics tools
+
+---
+
+
+
+## Bias, Risks & Limitations
+
+This is a learning and experimental project created to explore LLM fine-tuning techniques. The system is not designed for real-world deployment.
+
+
+
+## Project Structure
 
 ```
 Text2SQL-Finetune/
 │
 ├── scripts/
-│   ├── preprocess_wikisql.py        # Convert WikiSQL to training JSONL
-│   ├── preprocess_wikisql_test.py   # Prepare test set
-│   ├── train_lora.py                # Fine-tuning script
-│   ├── eval_simple.py               # Evaluation metrics
-│   ├── inference.py                 # Ask your own question
-│   ├── demo_compare.py              # Base vs finetuned comparison
-│   ├── Finaltest.py                 # Full test evaluation
-│   └── app_gradio.py                # Web interface
+│   ├── preprocess_wikisql.py
+│   ├── preprocess_wikisql_test.py
+│   ├── train_lora.py
+│   ├── eval_simple.py
+│   ├── inference.py
+│   ├── demo_compare.py
+│   ├── Finaltest.py
+│   └── app_gradio.py
 │
 ├── data/
-│   ├── raw_wikisql/                 # Original dataset files
-│   └── processed/                   # Converted JSONL files
+│   ├── raw_wikisql/
+│   └── processed/
 │
 ├── outputs/
-│   └── smollm2_360m_wikisql_lora/    # Saved LoRA adapter
+│   └── smollm2_360m_wikisql_lora/
 │
 ├── logs/
 │   ├── loss_curve.png
 │   ├── loss_log.csv
-│   └── evaluation files
+│   └── evaluation outputs
 │
-├── scripts.txt                      # One-line commands
 └── README.md
 ```
 
 ---
 
-##  Installation
+## Installation
 
 ```bash
 pip install torch transformers datasets peft sqlparse matplotlib gradio
 ```
 
-Optional (for low VRAM GPUs):
+Optional for low-memory GPUs:
 
 ```bash
 pip install bitsandbytes
@@ -97,21 +152,21 @@ pip install bitsandbytes
 
 ---
 
-##  Workflow
+## Workflow
 
-### 1️ Dataset Preparation
+Dataset Preparation:
 
 ```bash
 python scripts/preprocess_wikisql.py --out_dir data/processed
 ```
 
-### 2️ Model Training
+Model Training:
 
 ```bash
 python scripts/train_lora.py --epochs 1 --batch_size 2 --grad_accum 16
 ```
 
-### 3️ Evaluation
+Evaluation:
 
 ```bash
 python scripts/eval_simple.py \
@@ -121,7 +176,7 @@ python scripts/eval_simple.py \
   --merge_adapter
 ```
 
-### 4️ Inference
+Inference:
 
 ```bash
 python scripts/inference.py \
@@ -131,47 +186,56 @@ python scripts/inference.py \
   --question "Show products cheaper than 50"
 ```
 
-### 5️ Compare Base vs Finetuned
-
-```bash
-python scripts/demo_compare.py
-```
-
-### 6️ Run Web Demo
+Web Demo:
 
 ```bash
 python scripts/app_gradio.py
 ```
 
-Open:
-
-```
-http://127.0.0.1:7860
-```
+Open: [http://127.0.0.1:7860](http://127.0.0.1:7860)
 
 ---
 
-##  Training Logs
+## Training Details
 
-During training, logs are saved in:
+| Aspect                | Value                 |
+| --------------------- | --------------------- |
+| Dataset               | WikiSQL               |
+| Fine-Tuning           | LoRA                  |
+| Precision             | FP16 / 4-bit optional |
+| Sequence Length       | 512                   |
+| Batch Size            | 2                     |
+| Gradient Accumulation | 16                    |
+| Epochs                | 1                     |
 
-```
+---
+## Training Logs
+
+Training statistics are stored in:
+
 logs/loss_log.csv
 logs/loss_curve.png
-```
 
-### Example Loss Curve
+### Example Loss Curve ![Training Curve](logs/loss_curve)
 
-![Training Curve](images/training_curve.png)
+## Technical Specifications
 
----
-
-
-
-## Observations
-
-* Model learns SQL structure after fine-tuning
-* Outputs become more consistent
-* Syntax errors reduce over time
+| Component    | Description            |
+| ------------ | ---------------------- |
+| Architecture | Causal Language Model  |
+| Parameters   | 360M                   |
+| Adapter Type | LoRA                   |
+| Library      | PEFT                   |
+| Framework    | PyTorch + Transformers |
 
 ---
+
+## Environmental Impact
+
+| Item          | Estimate               |
+| ------------- | ---------------------- |
+| Hardware      | Single consumer GPU    |
+| Training Time | 5 hours              |
+| Carbon Impact | Minimal research-scale |
+
+
