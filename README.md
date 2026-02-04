@@ -8,14 +8,14 @@ tags:
 - text-to-sql
 - finetuned
 - instruction-tuning
----
+  
 
 # Text2SQL LoRA Model
 
 A LoRA fine-tuned version of SmolLM2-360M-Instruct specialized for Text-to-SQL generation.  
 This system translates natural language questions into SQL queries using a provided database schema.
 
----
+
 
 ## Project Overview
 
@@ -28,7 +28,7 @@ The full pipeline includes:
 - Inference tools  
 - Web demo interface  
 
----
+
 
 ## Example Task
 
@@ -54,7 +54,7 @@ Show all users older than 30
 SELECT name FROM users WHERE age > 30;
 ```
 
----
+
 
 ## More Example Inputs
 
@@ -66,7 +66,7 @@ SELECT name FROM users WHERE age > 30;
 | Find oldest user                   | `SELECT name FROM users ORDER BY age DESC LIMIT 1;` |
 | Show all products with price > 100 | `SELECT * FROM products WHERE price > 100;`         |
 
----
+
 
 ## Model Overview
 
@@ -80,7 +80,7 @@ SELECT name FROM users WHERE age > 30;
 | Language           | English                    |
 | License            | MIT                        |
 
----
+
 
 ## Intended Use
 
@@ -96,7 +96,7 @@ SELECT name FROM users WHERE age > 30;
 * AI-powered query assistants
 * Data analytics tools
 
----
+
 
 
 
@@ -136,7 +136,7 @@ Text2SQL-Finetune/
 └── README.md
 ```
 
----
+
 
 ## Installation
 
@@ -150,7 +150,7 @@ Optional for low-memory GPUs:
 pip install bitsandbytes
 ```
 
----
+
 
 ## Workflow
 
@@ -194,7 +194,7 @@ python scripts/app_gradio.py
 
 Open: [http://127.0.0.1:7860](http://127.0.0.1:7860)
 
----
+
 
 ## Training Details
 
@@ -208,7 +208,7 @@ Open: [http://127.0.0.1:7860](http://127.0.0.1:7860)
 | Gradient Accumulation | 16                    |
 | Epochs                | 1                     |
 
----
+
 ## Training Logs
 
 Training statistics are stored in:
@@ -216,7 +216,8 @@ Training statistics are stored in:
 logs/loss_log.csv
 logs/loss_curve.png
 
-### Example Loss Curve ![Training Curve](logs/loss_curve)
+### Example Loss Curve
+![Training Curve](logs/loss_curve.png)
 
 ## Technical Specifications
 
@@ -228,7 +229,7 @@ logs/loss_curve.png
 | Library      | PEFT                   |
 | Framework    | PyTorch + Transformers |
 
----
+
 
 ## Environmental Impact
 
