@@ -1,0 +1,54 @@
+
+python scripts/preprocess_wikisql.py --out_dir data/processed
+python scripts/preprocess_wikisql_test.py --out_dir data/processed
+
+python scripts/train_lora.py --epochs 1 --max_len 512 --batch_size 2 --grad_accum 16 *> logs\02_train.txt
+
+python scripts/eval_simple.py `
+  --model_dir outputs/smollm2_360m_wikisql_lora `
+  --base_model HuggingFaceTB/SmolLM2-360M-Instruct `
+  --eval_file data/processed/wikisql_val.jsonl `
+  --num_samples 200 `
+  --show_examples 5 `
+  --save_jsonl logs/eval_preds.jsonl `
+  --merge_adapter *> logs\03_eval.txt
+
+python scripts/inference.py `
+  --model_dir outputs/smollm2_360m_wikisql_lora `
+  --base_model HuggingFaceTB/SmolLM2-360M-Instruct `
+  --schema "CREATE TABLE ""users"" (""id"" INTEGER, ""name"" TEXT, ""age"" INTEGER, ""city"" TEXT);" `
+  --question "Show all users older than 30" `
+  --merge_adapter *> logs\04_inference.txt
+
+python scripts/demo_compare.py `
+  --base_model HuggingFaceTB/SmolLM2-360M-Instruct `
+  --finetuned_dir outputs/smollm2_360m_wikisql_lora `
+  --eval_file data/processed/wikisql_val.jsonl `
+  --num_samples 200 `
+  --show_improvements 5 `
+  --show_regressions 5 *> logs\05_compare.txt
+
+python scripts/Finaltest.py `
+  --model_dir outputs/smollm2_360m_wikisql_lora `
+  --eval_file data/processed/wikisql_test.jsonl `
+  --save_log logs/test_final_report.txt
+
+python scripts/app_gradio.py `
+  --model_dir outputs/smollm2_360m_wikisql_lora `
+  --base_model HuggingFaceTB/SmolLM2-360M-Instruct `
+  --merge_adapter
+
+
+
+  CREATE TABLE "table_10015132_1" (
+  "Player"           TEXT,
+  "No."              TEXT,
+  "Nationality"      TEXT,
+  "Position"         TEXT,
+  "Years in Toronto" TEXT,
+  "School/Club Team" TEXT
+);
+What school did player number 6 come from?
+What position did the player from Baylor play?
+Which school did the player that has been in Toronto from 2010-2012 go to?
+
