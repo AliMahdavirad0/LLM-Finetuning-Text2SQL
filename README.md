@@ -133,6 +133,56 @@ Text2SQL-Finetune/
 │
 └── README.md
 ```
+## Training Objective (Loss Function)
+
+This project fine-tunes a causal language model to generate SQL queries.  
+The model is trained using the standard **token-level Cross-Entropy Loss** used in GPT-style language models.
+
+### Loss Formula
+
+\[
+\mathcal{L} = - \sum_{t=1}^{T} \log P(y_t \mid y_{<t}, \text{prompt})
+\]
+
+Where:
+
+- \(y_t\) = correct token at position *t*  
+- \(y_{<t}\) = previous tokens  
+- prompt = database schema + question  
+- \(P(y_t | ...)\) = probability predicted by the model  
+
+---
+
+### How It Works in This Project
+
+Each training sample looks like:
+
+Schema:
+CREATE TABLE users (id INT, name TEXT, age INT);
+
+Question: Show all users older than 30
+
+SQL:
+SELECT name FROM users WHERE age > 30;
+
+
+| Part | Used for Loss? |
+|------|----------------|
+| Schema + Question | No (context only) |
+| SQL tokens | Yes (model learns to predict these) |
+
+The model is penalized whenever it predicts the wrong SQL token.
+
+---
+
+### Technical Details
+
+- Model type: **Causal Language Model**
+- Objective: **Next-token prediction**
+- Loss function: **Cross-Entropy Loss**
+- Implemented automatically via HuggingFace Transformers
+
+```python
 
 
 
