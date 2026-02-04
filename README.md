@@ -1,13 +1,11 @@
 
-base_model: HuggingFaceTB/SmolLM2-360M-Instruct
-library_name: peft
-pipeline_tag: text-generation
-tags:
-- lora
-- transformers
-- text-to-sql
-- finetuned
-- instruction-tuning
+*base_model*: HuggingFaceTB/SmolLM2-360M-Instruct
+
+*library_name*: peft
+
+*pipeline_tag*: text-generation
+
+
   
 
 # Text2SQL LoRA Model
